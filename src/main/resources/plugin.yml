@@ -1,6 +1,6 @@
 main: yy.gourlitburo.yeyanick.Main
 name: YeyaNick
-version: 0.0.1
+version: 0.0.2
 api-version: 1.15
 author: Zack Guard
 description: Set player nicknames.
@@ -8,7 +8,7 @@ commands:
   yeyanick:
     aliases: [yn]
     description: Use YeyaNick.
-    usage: "Usage: /yn (set|clear) <nick> [<player>]"
+    usage: "Usage: /yn (set <nick> | clear) [<player>]"
     permission: yeyanick.use
 permissions:
   yeyanick.use:

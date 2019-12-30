@@ -12,27 +12,48 @@ import org.bukkit.entity.Player;
 class Executor implements CommandExecutor {
     private Main plugin;
 
+    private int SET = 0;
+    private int CLEAR = 1;
+
     public Executor(Main instance) { this.plugin = instance; }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (args.length < 2) return false;
+        int sub = -1;
+
+        if (args.length < 1) return false;
 
         String cmd = args[0];
-        if (!cmd.equalsIgnoreCase("set") && !cmd.equalsIgnoreCase("clear")) return false;
+        if (!cmd.equals("set") && !cmd.equals("clear")) return false;
 
-        String nick = Color.colorize(args[1] + "&r");
+        if (cmd.equals("set")) sub = SET;
+        else if (cmd.equals("clear")) sub = CLEAR;
+
+        if (sub == SET && args.length < 2) {
+            sender.sendMessage("Error: No nick specified.");
+            return true;
+        }
+
+        String nick = null;
+        String targetName = null;
+        if (sub == SET) {
+            nick = Color.colorize(args[1] + "&r");
+            targetName = args.length > 2 ? args[2] : null;
+        } else if (sub == CLEAR) {
+            targetName = args.length > 1 ? args[1] : null;
+        }
+
         Player target;
-        if (args.length == 2) {
+        if (targetName == null) {
             if (sender instanceof ConsoleCommandSender) {
                 sender.sendMessage("Error: Console must specify a player whose nick to manage.");
                 return true;
             }
             target = (Player) sender;
         } else {
-            target = Bukkit.getPlayer(args[2]);
+            target = Bukkit.getPlayer(targetName);
             if (target == null) {
-                sender.sendMessage(String.format("Error: Player '%s' not found.", args[1]));
+                sender.sendMessage(String.format("Error: Player '%s' not found.", targetName));
                 return true;
             }
 
@@ -46,15 +67,12 @@ class Executor implements CommandExecutor {
         }
 
         UUID id = target.getUniqueId();
-        switch (cmd) {
-            case "set": 
-                plugin.putNick(id, nick);
-                sender.sendMessage(String.format("Set %s's nick to '%s'.", target.getName(), nick));
-                break;
-            case "clear":
-                plugin.clearNick(id);
-                sender.sendMessage(String.format("Cleared %s's nick.", target.getName()));
-                break;
+        if (sub == SET) {
+            plugin.putNick(id, nick);
+            sender.sendMessage(String.format("Set %s's nick to '%s'.", target.getName(), nick));
+        } else if (sub == CLEAR) {
+            plugin.clearNick(id);
+            sender.sendMessage(String.format("Cleared %s's nick.", target.getName()));
         }
 
         return true;
