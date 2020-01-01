@@ -1,6 +1,6 @@
 main: yy.gourlitburo.yeyanick.Main
 name: YeyaNick
-version: 0.0.2
+version: 0.0.3
 api-version: 1.15
 author: Zack Guard
 description: Set player nicknames.

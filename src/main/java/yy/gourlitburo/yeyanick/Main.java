@@ -73,7 +73,8 @@ public class Main extends JavaPlugin {
         Player player = Bukkit.getPlayer(id);
         if (player == null) return false;
         player.setDisplayName(nick);
-        player.setPlayerListName(nick);
+        if (this.getConfig().getBoolean("setplayerlistname"))
+            player.setPlayerListName(nick);
         return true;
     }
 
